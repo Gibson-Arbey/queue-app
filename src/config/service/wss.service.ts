@@ -3,7 +3,7 @@ import { WebSocketServer, WebSocket } from 'ws';
 
 interface Options {
   server: Server;
-  path? : string;
+  path : string;
 }
 
 export class WssService {
@@ -11,8 +11,7 @@ export class WssService {
   private readonly wss: WebSocketServer;
 
   private constructor(options: Options) {
-    const { server, path = '/ws' } = options;
-    this.wss = new WebSocketServer({server, path});
+    this.wss = new WebSocketServer(options);
     this.start();
   }
 

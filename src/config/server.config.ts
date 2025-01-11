@@ -26,29 +26,29 @@ export class Server {
   
   
   async start() {
-    
-
-    //* Middlewares
-    this.app.use( express.json() ); // raw
-    this.app.use( express.urlencoded({ extended: true }) ); // x-www-form-urlencoded
-
-    //* Public Folder
-    this.app.use( express.static( this.publicPath ) );
-
-    //* Routes
-    this.app.use( this.routes );
-
-    //* SPA /^\/(?!api).*/  <== Únicamente si no empieza con la palabra api
-    this.app.get('*', (req, res) => {
-      const indexPath = path.join( __dirname + `../../../${ this.publicPath }/index.html` );
-      res.sendFile(indexPath);
-    });
-    
-
     this.serverListener = this.app.listen(this.port, () => {
       console.log(`Servidor corriendo en el puerto ${ this.port }`);
     });
 
+    this.configure();
+  }
+
+  private configure() {
+     //* Middlewares
+     this.app.use( express.json() ); // raw
+     this.app.use( express.urlencoded({ extended: true }) ); // x-www-form-urlencoded
+ 
+     //* Public Folder
+     this.app.use( express.static( this.publicPath ) );
+ 
+     //* Routes
+     this.app.use( this.routes );
+ 
+     //* SPA /^\/(?!api).*/  <== Únicamente si no empieza con la palabra api
+     this.app.get('*', (req, res) => {
+       const indexPath = path.join( __dirname + `../../../${ this.publicPath }/index.html` );
+       res.sendFile(indexPath);
+     });
   }
 
   public close() {
