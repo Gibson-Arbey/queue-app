@@ -1,21 +1,23 @@
 import { Server } from 'http';
-import { WebSocketServer, WebSocket } from 'ws';
+import { WebSocket, WebSocketServer} from 'ws';
 
 interface Options {
   server: Server;
-  path : string;
+  path?: string; // ws
 }
 
 export class WssService {
   private static _instance: WssService;
-  private readonly wss: WebSocketServer;
+  private wss: WebSocketServer;
 
-  private constructor(options: Options) {
-    this.wss = new WebSocketServer(options);
+  private constructor( options: Options ) {
+    const { server, path = '/ws' } = options; /// ws://localhost:3000/ws
+
+    this.wss = new WebSocketServer({ server, path });
     this.start();
   }
 
-  static initWss(options: Options) {
+  static initWss( options: Options ) {
     WssService._instance = new WssService(options);
   }
 

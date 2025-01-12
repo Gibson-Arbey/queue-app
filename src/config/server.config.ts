@@ -1,58 +1,39 @@
-import express, { Router } from 'express';
+import express, { Router, Application } from 'express';
 import path from 'path';
 
 interface Options {
-  port: number;
   routes: Router;
   public_path?: string;
 }
 
-
 export class Server {
-
-  public readonly app = express();
-  private serverListener?: any;
-  private readonly port: number;
+  public readonly app: Application = express(); // Express application
   private readonly publicPath: string;
   private readonly routes: Router;
 
   constructor(options: Options) {
-    const { port, routes, public_path = 'public' } = options;
-    this.port = port;
+    const { routes, public_path = 'public' } = options;
     this.publicPath = public_path;
     this.routes = routes;
-  }
 
-  
-  
-  async start() {
-    this.serverListener = this.app.listen(this.port, () => {
-      console.log(`Servidor corriendo en el puerto ${ this.port }`);
-    });
-
-    this.configure();
+    this.configure(); // Configura middlewares y rutas
   }
 
   private configure() {
-     //* Middlewares
-     this.app.use( express.json() ); // raw
-     this.app.use( express.urlencoded({ extended: true }) ); // x-www-form-urlencoded
- 
-     //* Public Folder
-     this.app.use( express.static( this.publicPath ) );
- 
-     //* Routes
-     this.app.use( this.routes );
- 
-     //* SPA /^\/(?!api).*/  <== Únicamente si no empieza con la palabra api
-     this.app.get('*', (req, res) => {
-       const indexPath = path.join( __dirname + `../../../${ this.publicPath }/index.html` );
-       res.sendFile(indexPath);
-     });
-  }
+    //* Middlewares
+    this.app.use(express.json());
+    this.app.use(express.urlencoded({ extended: true }));
 
-  public close() {
-    this.serverListener?.close();
-  }
+    //* Routes
+    this.app.use(this.routes);
 
+    //* Public Folder
+    this.app.use(express.static(this.publicPath));
+
+    //* SPA Fallback (Debe ir después de las rutas de la API)
+    this.app.get(/^\/(?!api).*/, (req, res) => {
+      const indexPath = path.join(__dirname, `../../${this.publicPath}/index.html`);
+      res.sendFile(indexPath);
+    });
+  }
 }
