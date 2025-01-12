@@ -12,6 +12,7 @@
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^22.10.5",
+    "@types/uuid": "^10.0.0",
     "@types/ws": "^8.5.13",
     "dotenv": "^16.4.7",
     "env-var": "^7.5.0",
@@ -23,6 +24,7 @@
   "dependencies": {
     "@types/express": "^5.0.0",
     "queue-app": "file:",
+    "uuid": "^11.0.5",
     "ws": "^8.18.0"
   }
 }
