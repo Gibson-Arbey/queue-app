@@ -21,7 +21,7 @@ export class WssService {
     WssService._instance = new WssService(options);
   }
 
-  static get instace(): WssService {
+  static get instance(): WssService {
     if( !WssService._instance) {
       throw new Error('El WebService no esta instanciado') ;
     }
@@ -34,5 +34,13 @@ export class WssService {
 
       ws.on('close', () => console.log("Cliente desconectado"));
     });
+  }
+
+  public sendMessage( type: string, payload: Object ) {
+    this.wss.clients.forEach( client => {
+      if ( client.readyState === WebSocket.OPEN ) {
+        client.send( JSON.stringify({ type, payload }) );
+      }
+    })
   }
 }
